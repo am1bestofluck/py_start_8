@@ -1,0 +1,6 @@
+*.*
+!gradesJournal.db
+!.gitignore
+!*.py
+!*.txt
+!*.md
