@@ -150,11 +150,12 @@ def main():
     # student_add()
     # object_add()
     # pprint.pp(students_reveal())
-    student_evaluate()
-    print(student_report())
+    # student_evaluate()
+    # print(student_report())
     # student_evaluate()
     # quit_()a
     return
 
 
-main()
+if __name__ == main():
+    main()

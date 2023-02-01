@@ -94,12 +94,12 @@ def init_subjects():
 
 
 def main():
-    # if Path(MAIN).exists():
-    #     print('delete old one first')
-    #     return
-    # init_base()
-    # randomize_students()
-    # init_subjects()
+    if Path(MAIN).exists():
+        print('delete old one first')
+        return
+    init_base()
+    randomize_students()
+    init_subjects()
     return
 
 
