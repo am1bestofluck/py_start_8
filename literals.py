@@ -17,9 +17,11 @@ NAMES = "rand_names.txt"
 SUBJECTS = ""
 
 def input_int(invite: str = "int", min_: int =1, max_: int = 5):
-    out = max_ + 1 
-    while not out.isdigit() and not min_< out <max_:
+    out = "fail" 
+    while not out.isdigit():
         out = input(invite)
+        if int(out) not in range(min_,max_+1):
+            out = "fail"
     return int(out)
 
 

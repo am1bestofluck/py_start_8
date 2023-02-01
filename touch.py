@@ -14,19 +14,21 @@ class Student():
         self.surname = surname
         self.grades = "''"
 
-    def add_mark(self, mark: int, subject: str = None):
-        
+    def add_mark(self, mark: int, subject: int = None):
+
         core = sqlite3.connect(MAIN)
         crs = core.cursor()
 
         if not subject:
-            subject = input('subject to evaluate') # предмет
-        all_subjects = dict(enumerate(list(crs.execute("SELECT name FROM subjects"))))
+            all_subjects = dict(
+                enumerate([i[0] for i in list(crs.execute("SELECT name FROM subjects"))]))
+            pprint.pp(all_subjects)
+            subject = input_int(invite="int as in number of subject!",
+                                min_=min(all_subjects), max_=max(all_subjects))  # предмет
 
-
-
+        subject_to_expand = all_subjects[subject]
         student_id = crs.execute(' '.join(('SELECT', 'pID', 'FROM students',
-                                       'WHERE', f'name LIKE "{self.name}" AND', f'surname LIKE "{self.surname}";')))
+                                           'WHERE', f'name LIKE "{self.name}" AND', f'surname LIKE "{self.surname}";')))
         list_it = list(student_id)
         if list_it == []:
             print("no match")
@@ -35,12 +37,16 @@ class Student():
             print("ВОЗМОЖНЫ РАЗНОЧТЕНИЯ!")
         student_id = list_it[0][0]
 
+        previous_notes = list(crs.execute(' '.join((
+            f'SELECT grades FROM  {subject_to_expand}',
+            f'where stId = "{student_id}";'))))[0][0]
 
-        crs.execute('SELECT name FROM  '
-                    + '')
-        core.execute("")
+        updated_notes = previous_notes + str(mark)
+        crs.execute( f"UPDATE {subject_to_expand} SET grades="+
+        f'"{updated_notes}"'+ f' WHERE stId ="{student_id}";' )
+
         core.commit()
-        print(self.name)
+        return None
 
     def report(self):
         return self.grades
@@ -124,8 +130,17 @@ def student_report() -> dict:
                      list(crs.execute('SELECT name FROM subjects;'))]
     for key_ in subjects_list:
         out[key_] = [i for i in
-                     list(crs.execute(f"SELECT grades FROM '{key_}';"))[0]]
+                     list(crs.execute(f"SELECT grades FROM '{key_}' "
+                     + f"WHERE stId={student_id}"))[0]]
     return out
+
+
+def student_evaluate():
+    tmp = Student(
+        name=input_name_like('name'), surname=input_name_like('surname')
+    )
+    tmp.add_mark(mark=input_int("mark"))
+
 
 def quit_():
     sys.exit()
@@ -135,9 +150,10 @@ def main():
     # student_add()
     # object_add()
     # pprint.pp(students_reveal())
-    # student_report()
-    
-    quit_()
+    student_evaluate()
+    print(student_report())
+    # student_evaluate()
+    # quit_()a
     return
 
 
