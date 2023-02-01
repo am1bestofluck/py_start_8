@@ -37,10 +37,12 @@ loop ={
 # * 3) Вывод среднего балла по школе по конкретному предмету -
 # * 4)Вывод количества учеников претендующих на золотую медаль (все оценки либо 4 либо 5) -
 # Добавить хранение в файле, и импорт из файла +++++++++
+def main():
+    while True:
+        pprint.pp(loop)
+        command = input("ready.")
+        if command in loop:
+            eval(loop[command])
 
-
-while True:
-    pprint.pp(loop)
-    command = input("ready.")
-    if command in loop:
-        eval(loop[command])
+if __name__ == '__main__':
+    main()
