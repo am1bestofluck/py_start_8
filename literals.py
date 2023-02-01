@@ -1,4 +1,7 @@
 
+"""storing paths and constants here.
+Also, building some default base"""
+
 from pathlib import Path
 import random
 import sqlite3
@@ -6,16 +9,16 @@ import sqlite3
 from string import ascii_letters
 
 
-"""storing paths and constants here"""
+
 
 MAIN = "gradesJournal.db"
 
 NAMES = "rand_names.txt"
 SUBJECTS = ""
 
-def input_int(invite: str = "int"):
-    out = ""
-    while not out.isdigit():
+def input_int(invite: str = "int", min_: int =1, max_: int = 5):
+    out = max_ + 1 
+    while not out.isdigit() and not min_< out <max_:
         out = input(invite)
     return int(out)
 
@@ -35,11 +38,11 @@ def init_base():
     crs.execute("CREATE TABLE students ("
                 + 'pId INTEGER PRIMARY KEY, '
                 + 'name TEXT, '
-                + 'surname TEXT, '
-                + 'grades TEXT);')
+                + 'surname TEXT '
+                + ');')
     crs.execute('CREATE TABLE subjects ( '
                 + 'sId INTEGER  PRIMARY KEY, '
-                + 'name TEXT);')
+                + 'name TEXT UNIQUE);')
     main.commit()
 
 
@@ -65,34 +68,37 @@ def init_subjects():
     collection = ['olympic_icecream_munching','submerged_chess',
     'assembler_interface_design', 'dyplomatic_bombardment',
     'horoscopes']
-
+    pick = random.sample(collection,k = 3)
 
     main = sqlite3.connect(MAIN)
     crs = main.cursor()
 
-    for i in collection:
+    for i in pick:
         crs.execute(' '.join(('INSERT INTO',
         'subjects( name)', 'VALUES'
         f'("{i}");')))
     
-    pick = random.choices(collection,k = 3)
+    
     students = list(crs.execute(' '.join(('SELECT','pId','FROM',
     'students',';'))))
 
     for subj in pick:
         crs.execute(' '.join(('CREATE TABLE', subj,'(',
-        'stId','grades',');',)))
+        'stId INT,','grades TEXT',');')))
         for student in students:
             crs.execute(' '.join(('INSERT INTO',subj,'( stid, grades )',
-            'VALUES', f'( {student} , "" );')))
+            'VALUES', f'( {student[0]} , "" );')))
+    main.commit()
+
 
 def main():
-    if Path(MAIN).exists():
-        print('delete old one first')
-        return
-    init_base()
-    randomize_students()
-    init_subjects()
+    # if Path(MAIN).exists():
+    #     print('delete old one first')
+    #     return
+    # init_base()
+    # randomize_students()
+    # init_subjects()
+    return
 
 
 if __name__ == "__main__":
